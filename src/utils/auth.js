@@ -1,15 +1,13 @@
-import history from './history';
-
 const Auth = {
   getEmail() {
     return localStorage.getItem('email');
   },
 
-  logout() {
+  logout(props) {
     localStorage.removeItem('jwtToken');
     localStorage.removeItem('email');
     alert('Logout successful');
-    history.push('/login');
+    props.history.push('/login');
   },
 
   getToken() {

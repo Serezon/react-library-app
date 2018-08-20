@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import history from '../../utils/history';
+import { withRouter } from 'react-router-dom';
+// import history from '../../utils/history';
 import './signup.css';
 
 class Signup extends Component {
@@ -19,14 +20,14 @@ class Signup extends Component {
       data[input.name] = input.value;
     }
     
-    fetch('https://enigmatic-badlands-81212.herokuapp.com/api/users/signup', {
+    fetch('http://localhost:4040/api/users/signup', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { "Content-Type" : "application/json" }
     }).then(res => res.json())
     .then( () => {
       alert('Signup successful!');
-      history.push('/login');
+      this.props.history.push('/login');
     })
     .catch(error => console.error('Error:', error));
   }
@@ -50,4 +51,4 @@ class Signup extends Component {
   }
 }
 
-export default Signup;
+export default withRouter(Signup);

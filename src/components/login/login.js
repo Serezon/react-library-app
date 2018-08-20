@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Link, Redirect } from 'react-router-dom';
-import history from '../../utils/history';
+import { Link, Redirect, withRouter } from 'react-router-dom';
 import Auth from '../../utils/auth';
 import './login.css';
 
@@ -8,7 +7,7 @@ class Login extends Component {
 
   constructor(props) {
     super(props);
-    this.handleSubmit.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   }
 
   handleSubmit(event) {
@@ -21,16 +20,20 @@ class Login extends Component {
         data[input.name] = input.value;
     }
 
-    fetch('https://enigmatic-badlands-81212.herokuapp.com/api/auth/login', {
+    fetch('http://localhost:4040/api/auth/login', {
       method: 'POST',
       body: JSON.stringify(data),
       headers: { "Content-Type": "application/json" }
-    }).then(res => res.json())
+    }).then(res => {
+      if (res.status === 200 ) return res.json();
+      alert('Authentication error');
+      throw new Error('Authentication failed!');
+    })
       .then(response => {
         localStorage.setItem('jwtToken', response.token);
         localStorage.setItem('email', data.email);
         alert('Login successful!');
-        history.push('/');
+        this.props.history.push('/');
       })
       .catch(error => console.error('Error:', error));
   }
@@ -60,4 +63,4 @@ class Login extends Component {
 
 }
 
-export default Login;
+export default withRouter(Login);
