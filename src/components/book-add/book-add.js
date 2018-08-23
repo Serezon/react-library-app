@@ -2,53 +2,71 @@ import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
 
 import './book-add.css';
+import Api from '../../utils/api';
 
 class BookAdd extends Component {
 
   constructor(props) {
     super(props);
+    this.state = {
+      author: '',
+      title: '',
+      rating: '',
+      status: true,
+      file: null,
+      description: ''
+    };
     this.onSubmit = this.onSubmit.bind(this);
+    this.handleChange = this.handleChange.bind(this);
+    this.handleUpload = this.handleUpload.bind(this);
+  }
+
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value })
+  }
+
+  handleUpload(e) {
+    this.setState({ file: e.target.files[0] });
   }
 
   onSubmit(e) {
     e.preventDefault();
     let body = new FormData();
+    const api = new Api();
 
-    let data = Array.prototype.filter.call(e.target.elements, 
-      (input) => {
-        if (input.nodeName === 'BUTTON') return false;
-        return true;
-      });
-    Array.prototype.map.call(data, (input) => {
-      input.id !== 'file' ? body.append( input.id, input.value )
-      : body.append('file', input.files[0]);
-    });
-    
-    fetch('http://localhost:4040/api/books/create', {
-      method: 'POST',
-      headers: { 
-        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-     },
-      body: body,
-    })
-    .then(res => res.json())
-      .then(response => {
-        console.log(response);
-        alert('Book was added successfully!')
-        this.props.history.push('/');
-      })
-      .catch(error => console.error('Error:', error));
+    for (let prop in this.state) {
+      if (this.state[prop]) body.append(prop, this.state[prop]);
+    };
+
+    api.createBook(body)
+      .then(() => this.props.history.push('/'));
   }
 
   render() {
     return (
-      <form onSubmit={this.onSubmit} className="form-add">
-        <input type="file" id="file" accept=".jpg, .png" required />
-        <input type="text" id="author" placeholder="author" required />
-        <input type="text" id="title" placeholder="Title" required />
-        <textarea id="description" rows="10" placeholder="Description..." required ></textarea>
-        <input type="number" id="rating" placeholder="Number from 1 to 5" min="1" max="5" required/>
-        <select name="status" id="status">
+      <form onSubmit={this.onSubmit} className="form-edit">
+        <input type="file" name="file" onChange={this.handleUpload} accept=".jpg, .png" />
+        <input type="text" name="author" placeholder="author" value={this.state.author} onChange={this.handleChange} required />
+        <input type="text" name="title" placeholder="Title" value={this.state.title} onChange={this.handleChange} required />
+        <textarea
+          name="description"
+          rows="10"
+          placeholder="Description..."
+          value={this.state.description}
+          onChange={this.handleChange}
+          required
+        >
+        </textarea>
+        <input
+          type="number"
+          name="rating"
+          placeholder="Number from 1 to 5"
+          min="1" max="5"
+          value={this.state.rating}
+          onChange={this.handleChange}
+          required />
+        <select name="status" value={this.state.status} onChange={this.handleChange}>
           <option value="true">true</option>
           <option value="false">false</option>
         </select>

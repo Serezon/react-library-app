@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import Book from './book';
 
 import './books.css';
+import Api from '../../utils/api';
 
 class Books extends Component {
 
@@ -18,9 +19,10 @@ class Books extends Component {
     this.bookDetails = document.getElementsByClassName('book-details');
 
     this.getBooks = this.getBooks.bind(this);
-    this.makeQuery = this.makeQuery.bind(this);
+    this.showBooks = this.showBooks.bind(this);
+    this.getQuery = this.getQuery.bind(this);
     this.sortList = this.sortList.bind(this);
-    this.handleSearch = this.handleSearch.bind(this);
+    this.handleChange = this.handleChange.bind(this);
   }
 
   componentDidMount() {
@@ -40,56 +42,59 @@ class Books extends Component {
     this.setState({ skip: newSkip > 0 ? newSkip : 0 }, () => this.getBooks());
   }
 
-  makeQuery() {
-    //Is there a better way to create a query in react w/o libraries?
-    let params = Object.assign({}, this.state);
-    delete params.data;
-    if (!params.search) delete params.search;
+  getQuery() {
+    //Library that you gave me don't want to work properly, so i used some code from there for creating queries :)
+    const qs = require('qs');
 
-    let esc = encodeURIComponent;
-    return '/?' + Object.keys(params)
-      .map(k => esc(k) + '=' + esc(params[k]))
-      .join('&');
+    let params = {
+      sortBy: this.state.sortBy,
+      order: this.state.order,
+      skip: this.state.skip,
+      limit: this.state.limit
+    };
+
+    if (this.state.search !== '') params['search'] = this.state.search;
+
+    return qs.stringify(params);
+
   }
 
-  handleSearch() {
-    let searchValue = document.getElementsByName('search')[0].value;
-    this.setState({ search: searchValue }, () => this.getBooks());
+  handleChange(e) {
+    this.setState({ search: e.target.value });
   }
 
   getBooks() {
-    let bookCounter = this.state.skip;
 
-    fetch('http://localhost:4040/api/books' + this.makeQuery(), {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-      }
-    }).then(res => res.json())
-      .then(result => {
-        return result.map((book) => {
-          book.file = 'http://localhost:4040/' + book.file;
-          bookCounter += 1;
-          return (<Book
-            author={book.author}
-            title={book.title}
-            rating={book.rating}
-            status={book.status}
-            file={book.file}
-            description={book.description}
-            id={bookCounter}
-            _id={book._id}
-            key={bookCounter}
-            details={this.bookDetails}
-            rerenderList={this.getBooks}
-          />);
-        });
-      })
-      .then((data) => {
-        this.setState({ data: data });
-      })
+    const api = new Api();
+    api.getBooks(this.getQuery())
+      .then(result => this.showBooks(result))
       .catch(error => console.log(error));
+  }
+
+  showBooks(result) {
+    let bookCounter = this.state.skip;
+    const api = new Api();
+
+    let books = result.map((book) => {
+      book.file = `${api.getUrl()}/${book.file}`;
+      bookCounter += 1;
+      return (<Book
+        author={book.author}
+        title={book.title}
+        rating={book.rating}
+        status={book.status}
+        file={book.file}
+        description={book.description}
+        id={bookCounter}
+        _id={book._id}
+        key={bookCounter}
+        details={this.bookDetails}
+        rerenderList={this.getBooks}
+      />);
+    });
+
+    this.setState({ data: books });
+
   }
 
   render() {
@@ -97,19 +102,20 @@ class Books extends Component {
       <img
         src="loading.gif"
         alt="Loading.."
-        style={{ display: 'block', marginLeft: 'auto', marginRight: 'auto', width: '10%' }}
+        className="loading-gif"
       />
     );
 
     if (this.state.data && this.state.data.length === 0) {
-      return <div style={{ textAlign: 'center' }} >
+      return <div className="nobook-message" >
         There's no book left <br />
-        <button onClick={() => this.changePage(-1)}>Page before</button>
-        <button 
-        onClick={() => this.setState({search: ''}, () => this.getBooks())}
-        >
-        Cancel search
-        </button>
+        <button onClick={() => this.changePage(-1)}>
+          Page before
+      </button>
+
+        <button onClick={() => this.setState({ search: '' }, () => this.getBooks())}>
+          Cancel search
+      </button>
       </div>
     }
 
@@ -117,49 +123,54 @@ class Books extends Component {
       <div className="container">
 
         <h1 className="head">Books</h1>
+
         <div className="search">
-          <input type="search" 
-          name="search" 
-          placeholder="search" 
+
+          <input type="search"
+            name="search"
+            value={this.state.search}
+            onChange={this.handleChange}
+            placeholder="search"
           />
-          <button onClick={this.handleSearch}>GO</button>
+          <button onClick={this.getBooks}>GO</button>
+
         </div>
 
-      <div className="change-page">
-        <button disabled={this.state.skip === 0} onClick={() => this.changePage(-1)}>&#8592; Previous page</button>
-        <button disabled={this.state.data.length < 3} onClick={() => this.changePage(1)}>Next page &#8594;</button>
-      </div>
+        <div className="change-page">
+          <button disabled={this.state.skip === 0} onClick={() => this.changePage(-1)}>&#8592; Previous page</button>
+          <button disabled={this.state.data.length < 3} onClick={() => this.changePage(1)}>Next page &#8594;</button>
+        </div>
 
-      <table className="table">
+        <table className="table">
 
-        <thead>
-          <tr>
-            <th>№</th>
-            <th>
-              <button onClick={() => this.sortList('author')}> Author </button>
-            </th>
-            <th>
-              <button onClick={() => this.sortList('title')}> Title </button>
-            </th>
-            <th>
-              <button onClick={() => this.sortList('rating')}> Rating </button>
-            </th>
-            <th>
-              <button onClick={() => this.sortList('status')}> Status </button>
-            </th>
-            <th>
-              Actions
+          <thead>
+            <tr>
+              <th>№</th>
+              <th>
+                <button onClick={() => this.sortList('author')}> Author </button>
               </th>
-          </tr>
-        </thead>
+              <th>
+                <button onClick={() => this.sortList('title')}> Title </button>
+              </th>
+              <th>
+                <button onClick={() => this.sortList('rating')}> Rating </button>
+              </th>
+              <th>
+                <button onClick={() => this.sortList('status')}> Status </button>
+              </th>
+              <th>
+                Actions
+              </th>
+            </tr>
+          </thead>
 
-        <tbody>
-          {this.state.data}
-        </tbody>
+          <tbody>
+            {this.state.data}
+          </tbody>
 
-      </table>
+        </table>
 
-      <div className="book-details"></div>
+        <div className="book-details"></div>
 
       </div >
     );

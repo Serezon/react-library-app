@@ -8,7 +8,7 @@
 }
 
 .search {
-  margin-top: 40px;
+  margin-top: 30px;
   float: right;
 }
 
@@ -73,6 +73,12 @@ th button:focus {
 
 .button-delete {
   background-color: salmon;
+}
+
+.loading-gif {
+  display: block;
+  margin: 0 auto;
+  width: 10%;
 }
 
 .nobook-message {

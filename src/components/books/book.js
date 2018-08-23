@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 
 import './books.css';
+import Api from '../../utils/api';
 
 class Book extends Component {
 
@@ -22,17 +23,17 @@ class Book extends Component {
   }
 
   showDetails() {
-    const details =  
-      ( <React.Fragment>
-        <img src={this.props.file} alt="Book"/>
+    const details =
+      (<React.Fragment>
+        <img src={this.props.file} alt="Book" />
         <div className="book-info">
           <h3> {this.props.author + " - " + this.props.title} </h3>
           <div> {this.getStars(this.props.rating)} </div>
           <div> {this.props.description} </div>
         </div>
-      </React.Fragment> );
-      console.log(this.props.details);
-    ReactDOM.render( details, this.props.details[0] );
+      </React.Fragment>);
+    console.log(this.props.details);
+    ReactDOM.render(details, this.props.details[0]);
   }
 
   editBook() {
@@ -40,23 +41,13 @@ class Book extends Component {
   }
 
   deleteBook() {
-    fetch('http://localhost:4040/api/books/' + this.props._id, {
-      method: 'DELETE',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem('jwtToken')
-     }
-    })
-    .then(res => res.json())
-      .then(response => {
-        console.log(response);
-        alert('Book was deleted successfully!');
-        this.props.rerenderList();
-      })
-      .catch(error => console.error('Error:', error));
+    const api = new Api();
+
+    api.deleteBook(this.props._id)
+      .then(() => this.props.rerenderList());
   }
 
-  render() { 
+  render() {
 
     return (
       <tr className={this.props.status ? null : 'disabled-row'}>

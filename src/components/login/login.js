@@ -1,41 +1,33 @@
 import React, { Component } from 'react';
 import { Link, Redirect, withRouter } from 'react-router-dom';
 import Auth from '../../utils/auth';
+import Api from '../../utils/api';
 import './login.css';
 
 class Login extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      email: '',
+      password: ''
+    }
+
+    this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(e) {
+    this.setState({ [e.target.name]: e.target.value });
   }
 
   handleSubmit(event) {
     event.preventDefault();
-    const inputs = event.target;
-    let data = {};
+    const api = new Api();
 
-    for (let input of inputs) {
-      if (input.value)
-        data[input.name] = input.value;
-    }
-
-    fetch('http://localhost:4040/api/auth/login', {
-      method: 'POST',
-      body: JSON.stringify(data),
-      headers: { "Content-Type": "application/json" }
-    }).then(res => {
-      if (res.status === 200 ) return res.json();
-      alert('Authentication error');
-      throw new Error('Authentication failed!');
-    })
-      .then(response => {
-        localStorage.setItem('jwtToken', response.token);
-        localStorage.setItem('email', data.email);
-        alert('Login successful!');
-        this.props.history.push('/');
-      })
-      .catch(error => console.error('Error:', error));
+    api.login(this.state)
+      .then(() => this.props.history.push('/'));
   }
 
   render() {
@@ -43,16 +35,33 @@ class Login extends Component {
       return (
         <div className="wrapper">
           <form className="signin" onSubmit={this.handleSubmit}>
+
             <label htmlFor="inputEmail" className="signin__label">Email</label>
-            <input type="email" className="signin__input" placeholder="Email address" name="email" required />
+            <input
+              type="email"
+              placeholder="Email address"
+              name="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+              required
+            />
+
             <label htmlFor="inputPassword" className="signin__label">Password</label>
-            <input type="password" className="signin__input" placeholder="Password" name="password" required />
+            <input
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={this.state.password}
+              onChange={this.handleChange}
+              required
+            />
+
             <button className="signin__btn" type="submit">Sign in</button>
             <p>
               Not a member?
-            <Link to="/signup">
+              <Link to="/signup">
                 Signup here
-            </Link>
+              </Link>
             </p>
           </form>
         </div>

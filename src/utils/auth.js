@@ -10,6 +10,11 @@ const Auth = {
     props.history.push('/login');
   },
 
+  setUser(email, token) {
+    localStorage.setItem('jwtToken', token);
+    localStorage.setItem('email', email);
+  },
+
   getToken() {
     return localStorage.getItem('jwtToken');
   },
