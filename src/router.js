@@ -13,12 +13,18 @@ import BookEdit from './components/book-edit/book-edit';
 import Auth from './utils/auth';
 
 //Private route
-const PrivateRoute = ({ component: Component, ...rest }) => (
-  <Route {...rest} render={(props) => (
-    Auth.isLoggedIn() === true
-      ? <Component {...props} />
-      : <Redirect to='/login' />
-  )} />
+const PrivateRoute = ({ component: Component, roles, ...rest }) => (
+  <Route {...rest} render={(props) => {
+      if (!Auth.isLoggedIn()) return <Redirect to='/login' />;
+
+      if (!roles.includes(Auth.getRole())) {
+        alert("You don't have permission to do this");
+        return <Redirect to='/' />;
+      }
+
+      return <Component {...props} />
+    }
+  } />
 )
 
 class Router extends Component {
@@ -29,11 +35,12 @@ class Router extends Component {
         <div>
           <App />
           <Switch>
-            <PrivateRoute path='/' exact component={Books} />
-            <PrivateRoute path='/add' component={BookAdd} />
-            <PrivateRoute path='/edit/:id' component={BookEdit} />
+            <PrivateRoute path='/' roles={['admin', 'editor', 'user']} exact component={Books} />
+            <PrivateRoute path='/add' roles={['admin']} component={BookAdd} />
+            <PrivateRoute path='/edit/:id' roles={['admin', 'editor']} component={BookEdit} />
             <Route path='/login' component={Login} />
             <Route path='/signup' component={Signup} />
+            <Route component={ () => <h2>Page not found</h2> }/>
             <Redirect from='*' to='/' />
           </Switch>
         </div>

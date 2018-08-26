@@ -23,7 +23,8 @@ export default class Api {
       })
       .then(response => {
         alert('Login successful!');
-        Auth.setUser(data.email, response.token);
+        console.log(response);
+        Auth.setUser(response.email, response.token, response.role);
       })
       .catch(error => console.error('Error:', error))
   }
@@ -48,7 +49,18 @@ export default class Api {
         'Authorization': 'Bearer ' + Auth.getToken()
       }
     })
-      .then(res => res.json())
+      .then(res => {
+        if (res.status === 200) return res.json();
+
+        if (res.status === 401) {
+          alert('Authentication failed');
+          throw new Error('Authentication failed!');
+        }
+
+        alert('Data load from server failed!');
+        throw new Error('Data load from server failed!');
+
+      })
       .catch(error => console.log(error));
   }
 
@@ -98,6 +110,11 @@ export default class Api {
   }
 
   deleteBook(_id) {
+    if (Auth.getRole() !== 'admin') {
+      alert("You don't have permission to do this");
+      return new Promise(() => Promise.reject());
+    }
+
     return fetch(`${this.url}/api/books/${_id}`, {
       method: 'DELETE',
       headers: {
