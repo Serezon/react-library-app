@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 
 import './books.css';
 import Api from '../../utils/api';
@@ -32,7 +33,6 @@ class Book extends Component {
           <div> {this.props.description} </div>
         </div>
       </React.Fragment>);
-    console.log(this.props.details);
     ReactDOM.render(details, this.props.details[0]);
   }
 
@@ -81,4 +81,4 @@ class Book extends Component {
 
 }
 
-export default withRouter(Book);
+export default connect()(withRouter(Book));

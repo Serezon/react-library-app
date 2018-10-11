@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-// import history from './utils/history';
 
 //CSS
 import './app.css';
 
 //Utils
-import Auth from './utils/auth';
+import Auth from '../../utils/auth';
 
 class App extends Component {
 

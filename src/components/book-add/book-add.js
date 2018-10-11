@@ -19,8 +19,26 @@ class BookAdd extends Component {
     this.onSubmit = this.onSubmit.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleUpload = this.handleUpload.bind(this);
+    this.getBook = this.getBook.bind(this);
   }
 
+  getBook() {
+    const api = new Api();
+
+    api.getBook(this.props.match.params.id)
+      .then(result => {
+        this.setState({
+          author: result.author,
+          title: result.title,
+          rating: result.rating,
+          status: result.status,
+          description: result.description,
+          file: null
+        });
+      })
+      .catch(error => console.log(error));
+
+  }
 
   handleChange(e) {
     this.setState({ [e.target.name]: e.target.value })

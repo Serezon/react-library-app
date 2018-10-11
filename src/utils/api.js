@@ -60,8 +60,7 @@ export default class Api {
         alert('Data load from server failed!');
         throw new Error('Data load from server failed!');
 
-      })
-      .catch(error => console.log(error));
+      });
   }
 
   getBook(_id) {
