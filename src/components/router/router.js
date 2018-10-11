@@ -1,13 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { BrowserRouter, Route, Redirect, Switch } from 'react-router-dom';
 
 //Components
 import App from '../app/app';
-import BookList from '../../containers/BookList';
 import Login from '../login/login';
 import Signup from '../signup/signup';
-import BookAdd from '../book-add/book-add';
-import BookEdit from '../book-edit/book-edit';
+
+//Containers
+import BookList from '../../containers/BookList';
+import BookEditor from '../../containers/BookEditor';
 
 //Utils
 import Auth from '../../utils/auth';
@@ -32,18 +33,18 @@ class Router extends Component {
   render() {
     return (
       <BrowserRouter>
-        <div>
+        <Fragment>
           <App />
           <Switch>
             <PrivateRoute path='/' roles={['admin', 'editor', 'user']} exact component={BookList} />
-            <PrivateRoute path='/add' roles={['admin']} component={BookAdd} />
-            <PrivateRoute path='/edit/:id' roles={['admin', 'editor']} component={BookEdit} />
+            <PrivateRoute path='/add' roles={['admin']} component={BookEditor} />
+            <PrivateRoute path='/edit/:id' roles={['admin', 'editor']} component={BookEditor} />
             <Route path='/login' component={Login} />
             <Route path='/signup' component={Signup} />
             <Route component={ () => <h2>Page not found</h2> }/>
             <Redirect from='*' to='/' />
           </Switch>
-        </div>
+        </Fragment>
       </BrowserRouter>
     );
   }

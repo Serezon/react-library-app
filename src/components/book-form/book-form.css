@@ -1,10 +1,10 @@
-.form-edit {
+.form-editor {
   padding-top: 50px;
   margin: 0 auto;
   width: 300px;
 }
 
-.form-edit * {
+.form-editor * {
   display: block;
   margin: 0 auto;
   margin-bottom: 20px;
