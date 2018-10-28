@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Link, Redirect, withRouter } from 'react-router-dom';
 import Auth from '../../utils/auth';
 import Api from '../../utils/api';
-import './login.css';
+import './login.scss';
 
 class Login extends Component {
 
@@ -34,36 +34,44 @@ class Login extends Component {
     if (!Auth.isLoggedIn()) {
       return (
         <div className="wrapper">
+          <h2 className="display-4">Sign in</h2>
+          
           <form className="signin" onSubmit={this.handleSubmit}>
 
-            <label htmlFor="inputEmail" className="signin__label">Email</label>
-            <input
-              type="email"
-              placeholder="Email address"
-              name="email"
-              value={this.state.email}
-              onChange={this.handleChange}
-              required
-            />
+            <div class="form-group">
+              <label htmlFor="inputEmail">Email</label>
+              <input
+                className="form-control"
+                type="email"
+                placeholder="Email address"
+                name="email"
+                value={this.state.email}
+                onChange={this.handleChange}
+                required
+              />
+            </div>
 
-            <label htmlFor="inputPassword" className="signin__label">Password</label>
-            <input
-              type="password"
-              placeholder="Password"
-              name="password"
-              value={this.state.password}
-              onChange={this.handleChange}
-              required
-            />
+            <div class="form-group">
+              <label htmlFor="inputPassword">Password</label>
+              <input
+                className="form-control"
+                type="password"
+                placeholder="Password"
+                name="password"
+                value={this.state.password}
+                onChange={this.handleChange}
+                required
+              />
+            </div>
 
-            <button className="signin__btn" type="submit">Sign in</button>
-            <p>
-              Not a member?
+            <button className="btn btn-primary" type="submit">Sign in</button>
+          </form>
+          <p className="lead">
+              Not a member?&#160;
               <Link to="/signup">
                 Signup here
               </Link>
             </p>
-          </form>
         </div>
       )
     }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
-import './books.css';
+import './books.scss';
 import Api from '../../utils/api';
 
 class Book extends Component {
@@ -26,11 +26,11 @@ class Book extends Component {
   showDetails() {
     const details =
       (<React.Fragment>
-        <img src={this.props.file} alt="Book" />
+        <img className="img-thumbnail" src={this.props.file} alt="Book" />
         <div className="book-info">
           <h3> {this.props.author + " - " + this.props.title} </h3>
           <div> {this.getStars(this.props.rating)} </div>
-          <div> {this.props.description} </div>
+          <p class="lead"> {this.props.description} </p>
         </div>
       </React.Fragment>);
     ReactDOM.render(details, this.props.details[0]);
@@ -50,26 +50,27 @@ class Book extends Component {
   render() {
 
     return (
-      <tr className={this.props.status ? null : 'disabled-row'}>
-        <td> {this.props.id} </td>
+      <tr className={this.props.status ? null : 'table-secondary'}>
+        <th scope="row"> {this.props.id} </th>
         <td> {this.props.author} </td>
         <td
           onClick={this.showDetails}
-          style={{ cursor: 'pointer' }}>
-          {this.props.title}
+          style={{ cursor: 'pointer' }}
+        >
+          <b>{this.props.title}</b>
         </td>
         <td> {this.getStars(this.props.rating)} </td>
         <td> {this.props.status ? 'ON' : 'OFF'} </td>
         <td>
           <button
-            className="button button-edit"
+            className="btn btn-warning btn-sm button-actions"
             onClick={this.editBook}
           >
             Edit
           </button>
 
           <button
-            className="button button-delete"
+            className="btn btn-danger btn-sm button-actions"
             onClick={this.deleteBook}
           >
             Delete

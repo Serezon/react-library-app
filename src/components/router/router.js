@@ -41,7 +41,7 @@ class Router extends Component {
             <PrivateRoute path='/edit/:id' roles={['admin', 'editor']} component={BookEditor} />
             <Route path='/login' component={Login} />
             <Route path='/signup' component={Signup} />
-            <Route component={ () => <h2>Page not found</h2> }/>
+            <Route component={ () => <h2 className="display-3">Page not found</h2> }/>
             <Redirect from='*' to='/' />
           </Switch>
         </Fragment>

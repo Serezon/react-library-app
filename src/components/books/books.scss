@@ -1,0 +1,56 @@
+.loading-gif {
+  display: block;
+  margin: 0 auto;
+  width: 10%;
+}
+
+.nobook-message {
+  margin-top: 100px;
+  text-align: center;
+}
+
+.head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.search {
+  display: flex;
+}
+
+.change-page {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+}
+
+//Table
+
+td, th {
+  text-align: center;
+}
+
+.button-actions{
+  height: 1.5rem;
+  line-height: 100%;
+  margin: 0 5px;
+}
+
+// Book info
+
+.book-details {
+  padding-top: 50px;
+  margin: 0 auto;
+  width: 800px;
+}
+
+.book-details img {
+  float: left;
+  width: 30%;
+  margin-right: 30px;
+}
+
+.book-info div {
+  margin: 20px;
+}

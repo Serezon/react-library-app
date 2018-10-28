@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import './books.css';
+import './books.scss';
 
 class Books extends Component {
 
@@ -14,17 +14,17 @@ class Books extends Component {
     );
 
     if (this.props.fetchError) return (
-        <p>Error occured while loading books</p>
+      <p>Error occured while loading books</p>
     )
 
     if (this.props.data && this.props.data.length === 0) {
       return (<div className="nobook-message" >
-        There's no book left <br />
-        <button onClick={() => this.props.changePage(-1)}>
+        <h4>There's no book left</h4> 
+        <button className="btn btn-light" onClick={() => this.props.changePage(-1)}>
           Page before
         </button>
 
-        <button onClick={this.props.resetSearch}>
+        <button className="btn btn-light" onClick={this.props.resetSearch}>
           Cancel search
         </button>
       </div>)
@@ -32,46 +32,64 @@ class Books extends Component {
 
     return (
       <div className="container">
+        <div className="head">
+          <h1 className="display-4">Books</h1>
 
-        <h1 className="head">Books</h1>
+          <div className="search">
 
-        <div className="search">
+            <input type="search"
+              className="form-control"
+              name="search"
+              ref="searchField"
+              placeholder="search"
+            />
 
-          <input type="search"
-            name="search"
-            ref="searchField"
-            placeholder="search"
-          />
-          <button onClick={() => this.props.handleChange(this.refs.searchField.value)}>GO</button>
-          <button hidden={!this.props.query.search} onClick={this.props.resetSearch}>Cancel</button>
+            <button
+              className="btn btn-secondary"
+              onClick={() => this.props.handleChange(this.refs.searchField.value)}
+            >
+              GO
+          </button>
 
+            <button
+              hidden={!this.props.query.search}
+              className="btn btn-secondary"
+              onClick={this.props.resetSearch}
+            >
+              Cancel
+            </button>
+
+          </div>
         </div>
-
         <div className="change-page">
-          <button disabled={this.props.query.skip === 0}
+          <button
+            disabled={this.props.query.skip === 0}
+            className="btn btn-light"
             onClick={() => this.props.changePage(-1)}>&#8592; Previous page</button>
-          <button disabled={this.props.data.length < 3}
+          <button
+            disabled={this.props.data.length < 3}
+            className="btn btn-light"
             onClick={() => this.props.changePage(1)}>Next page &#8594;</button>
         </div>
 
-        <table className="table">
+        <table className="table table-hover">
 
-          <thead>
+          <thead className="thead-light">
             <tr>
-              <th>№</th>
-              <th>
-                <button onClick={() => this.props.sortList('author')}> Author </button>
+              <th scope="col">№</th>
+              <th scope="col">
+                <span onClick={() => this.props.sortList('author')}> Author </span>
               </th>
-              <th>
-                <button onClick={() => this.props.sortList('title')}> Title </button>
+              <th scope="col">
+                <span onClick={() => this.props.sortList('title')}> Title </span>
               </th>
-              <th>
-                <button onClick={() => this.props.sortList('rating')}> Rating </button>
+              <th scope="col">
+                <span onClick={() => this.props.sortList('rating')}> Rating </span>
               </th>
-              <th>
-                <button onClick={() => this.props.sortList('status')}> Status </button>
+              <th scope="col">
+                <span onClick={() => this.props.sortList('status')}> Status </span>
               </th>
-              <th>
+              <th scope="col">
                 Actions
               </th>
             </tr>

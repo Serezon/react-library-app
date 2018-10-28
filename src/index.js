@@ -1,10 +1,17 @@
+//Bootstrap
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min';
+
 import React from 'react';
 import { render } from 'react-dom';
+
+//Redux
 import { createStore, applyMiddleware } from 'redux';
 import Root from './components/root/root';
 import rootReducer from './reducers/index';
 import thunk from 'redux-thunk'
 import { createLogger } from 'redux-logger'
+
 import registerServiceWorker from './registerServiceWorker';
 
 const middleware = [ thunk ]

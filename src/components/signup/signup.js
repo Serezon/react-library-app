@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { withRouter } from 'react-router-dom';
-// import history from '../../utils/history';
-import './signup.css';
+import './signup.scss';
 import Api from '../../utils/api';
 
 class Signup extends Component {
@@ -34,30 +33,35 @@ class Signup extends Component {
   render() {
     return (
       <div className="wrapper">
-        <form className="signin" onSubmit={this.handleSubmit}>
-          <h2>Sign Up Now</h2>
+        <form className="signup" onSubmit={this.handleSubmit}>
+          <h2 className="display-4">Sign Up Now</h2>
+          <div class="form-group">
+            <label htmlFor="inputEmail">Email</label>
+            <input
+              className="form-control"
+              type="email"
+              placeholder="Email address"
+              name="email"
+              value={this.state.email}
+              onChange={this.handleChange}
+              required
+            />
+          </div>
 
-          <label htmlFor="inputEmail" className="signin__label">Email</label>
-          <input
-            type="email"
-            placeholder="Email address"
-            name="email"
-            value={this.state.email}
-            onChange={this.handleChange}
-            required
-          />
+          <div class="form-group">
+            <label htmlFor="inputPassword">Password</label>
+            <input
+              className="form-control"
+              type="password"
+              placeholder="Password"
+              name="password"
+              value={this.state.password}
+              onChange={this.handleChange}
+              required
+            />
+          </div>
 
-          <label htmlFor="inputPassword" className="signin__label">Password</label>
-          <input
-            type="password"
-            placeholder="Password"
-            name="password"
-            value={this.state.password}
-            onChange={this.handleChange}
-            required
-          />
-
-          <button type="submit">Sign Up</button>
+          <button className="btn btn-primary" type="submit">Sign Up</button>
         </form>
       </div>
     );
